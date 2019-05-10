@@ -24,9 +24,9 @@ namespace asp_net_core_mailgun_httpclient.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendTestMail(string emailAddress)
+        public async Task<IActionResult> SendTestMail(string emailAddress)
         {
-            emaiSender.SendMail(emailAddress, "subject", "<h1>body</h1>");
+            await emaiSender.SendMail(emailAddress, "subject", "<h1>body</h1>");
 
             ViewBag.EmailSentMessage = $"Email was successfully sent to {emailAddress}";
 
