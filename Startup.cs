@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using asp_net_core_mailgun_httpclient.Services;
 using Microsoft.AspNetCore.Builder;
@@ -32,9 +34,17 @@ namespace asp_net_core_mailgun_httpclient
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddSingleton(Configuration.GetSection("mailConfigSection").Get<MailConfigSection>());
+            MailConfigSection mailConfigSection = Configuration.GetSection("mailConfigSection").Get<MailConfigSection>();
+            services.AddSingleton(mailConfigSection);
+
             services.AddScoped<IEmailSender, MailgunEmailSender>();
 
+            services.AddHttpClient<IEmailSender, MailgunEmailSender>(cfg =>
+            {
+                cfg.BaseAddress=new Uri("https://api.mailgun.net");
+                cfg.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", 
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes($"api:{mailConfigSection.MailgunKey}")));
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
