@@ -4,5 +4,16 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <form method="post" asp-action="SendTestMail">
+        <label>Email address: </label>
+        <input type="email" name="emailAddress" required />
+        <button type="submit">Send test email</button>
+    </form>
+    @if(ViewBag.EmailSentMessage != null)
+    {
+        <br>
+        <p class="text-success">
+            @ViewBag.EmailSentMessage
+        </p>
+    }
 </div>
